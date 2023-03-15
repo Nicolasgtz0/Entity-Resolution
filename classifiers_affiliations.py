@@ -6,7 +6,6 @@ Created on Thu Mar  9 16:03:59 2023
 @author: nicolasgutierrez
 """
 
-
 #Import packages 
 
 import pandas as pd
@@ -44,9 +43,8 @@ def read(filename:str):
     df['jwdist'] = df['name'].apply(jwscore) 
     return df
     
-    
 
-def split(df): 
+def split(df): #Not needed
     """
     Parameters
     ----------
@@ -96,8 +94,15 @@ def predict(model:xgb.XGBClassifier, y_test:np.array): #running it
     x_pred : np.array
         Array of the predicted labels.
     '''
+    # instead of y_test, use features 
+    features = ['jwdist']
+    labels = ['match'] 
+    #model = 
+    
     x_pred = model.predict(y_test)
     return x_pred
+    return model.predict_proba(y_test)
+
 
 
 def asses(x_pred:np.array, X_test: np.array): 
@@ -118,14 +123,72 @@ def asses(x_pred:np.array, X_test: np.array):
     print('accuracy:', accuracy*100,'%') 
     return accuracy
 
-#easy match: Change one letter
+#easy match: Change one letter 
 #easy non-match: Completely different (identity)
 # Hard matches: What happens if there are 4 words wrong? Location?
 
 if __name__ =='__main__': 
     affy = read('affiliations.csv')
-    print(affy)
+    #print(affy.loc[(affy['indices']==(586,587))])  
+    train_set = pd.DataFrame()
+    #train_set = train_set.assign(match=[1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,])
+    #matches = [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0] 
+    #train_set['match'] = matches  
+    #print(train_set['match'])
+    ###train_set['match']==0
+    #Training the data manually, match or non match
+    train_set = train_set.append(affy.loc[affy['indices']==(13,14)])
+    train_set = train_set.append(affy.loc[affy['indices']==(15,16)]) 
+    train_set = train_set.append(affy.loc[affy['indices']==(31,32)])
+    train_set = train_set.append(affy.loc[affy['indices']==(75,76)])
+    train_set = train_set.append(affy.loc[affy['indices']==(77,81)])
+    train_set = train_set.append(affy.loc[affy['indices']==(75,82)])
+    train_set = train_set.append(affy.loc[affy['indices']==(81,97)])
+    train_set = train_set.append(affy.loc[affy['indices']==(13,99)])
+    train_set = train_set.append(affy.loc[affy['indices']==(103,107)])
+    train_set = train_set.append(affy.loc[affy['indices']==(246,149)])
+    train_set = train_set.append(affy.loc[affy['indices']==(0,5)])
+    train_set = train_set.append(affy.loc[affy['indices']==(13,20)]) 
+    train_set = train_set.append(affy.loc[affy['indices']==(3,17)])
+    train_set = train_set.append(affy.loc[affy['indices']==(23,27)])
+    train_set = train_set.append(affy.loc[affy['indices']==(35,34)])
+    train_set = train_set.append(affy.loc[affy['indices']==(89,90)])
+    train_set = train_set.append(affy.loc[affy['indices']==(100,101)])
+    train_set = train_set.append(affy.loc[affy['indices']==(108,109)])
+    train_set = train_set.append(affy.loc[affy['indices']==(134,135)]) 
+    train_set = train_set.append(affy.loc[affy['indices']==(141,142)])  
+    train_set = train_set.assign(match=[1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0])
+    print(train_set) 
+    
+## Pick 10 easy matches 
+# (13,14) 
+# (15,16)
+# (31,32)
+# (75,76)
+# (77,81)
+# (75,82)
+# (81,97)
+# (13,99)
+# (103,107)
+# (246,149)
+
+## Pick 10 easy non-matches 
+# (0,5) 
+# (13,20)
+# (3,17)
+# (23,27)
+# (35,34)
+# (89,90)
+# (100,101)
+# (108,109)
+# (134,135)
+# (141,142)
+#train_set = train_set.append(affy.loc[affy['indices']==(586,587)])  -> Caused error
+#train_set = train_set.append(affy.loc[affy['indices']==(744,745)])  -> Caused error
+
+    
+    
     #features_train, features_test, Label_train, Label_test = split(affy) 
     #affy_model = fit_and_train(features_train,Label_train)
     #predict_affy = predict(affy_model, features_test) 
-    #affy_accuracy = asses(predict_affy, Label_test)
+    #affy_accuracy = asses(predict_affy, Label_test) 
