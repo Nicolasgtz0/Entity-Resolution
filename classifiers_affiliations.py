@@ -95,9 +95,9 @@ def predict(model:xgb.XGBClassifier, y_test:np.array): #running it
         Array of the predicted labels.
     '''
     # instead of y_test, use features 
-    features = ['jwdist']
-    labels = ['match'] 
-    #model = 
+    #features = ['jwdist']
+    #labels = ['match'] 
+    #model =  
     
     x_pred = model.predict(y_test)
     return x_pred
@@ -159,6 +159,8 @@ if __name__ =='__main__':
     train_set = train_set.append(affy.loc[affy['indices']==(141,142)])  
     train_set = train_set.assign(match=[1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0])
     print(train_set) 
+    model = fit_and_train(train_set["jwdist"], train_set['match']) 
+    
     
 ## Pick 10 easy matches 
 # (13,14) 
