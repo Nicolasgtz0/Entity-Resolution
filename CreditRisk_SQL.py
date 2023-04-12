@@ -38,15 +38,16 @@ def read(filename:str):
     return loan_intentions, everything
     
 
-
-
 def append_to_db(df1: pd.DataFrame, df2: pd.DataFrame):
     # do some operations to split affiliations and authors
     #Create an engine and let pandas help with sql 
     engine = sqlalchemy.create_engine(
-        'sqlite:///Users/nicolasgutierrez/Desktop/Databases/credit_risk.db') 
-    df1.to_sql('loan_intent', engine, index=False, if_exists='append')
-    df2.to_sql('everything', engine, index=False, if_exists='append')
+        'sqlite:////Users/nicolasgutierrez/Desktop/Databases/credit_risk.db') 
+    with engine.connect() as conn:
+        df1.to_sql('loan_intent', conn, index=False, if_exists='append')
+        df2.to_sql('everything', conn, index=False, if_exists='append')
+        #df1.to_sql('loan_intent', engine, index=False, if_exists='append')
+        #df2.to_sql('everything', engine, index=False, if_exists='append')
 
 if __name__ =='__main__': 
     sqliteConnection = sqlite3.connect('credit_risk.db') 
